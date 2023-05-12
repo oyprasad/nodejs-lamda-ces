@@ -1,0 +1,16 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commnads:
+  build:
+    commands:
+    - echo "copying source code from s3 bucket to pipeline working directory "
+    #- aws s3 cp s3://test-node-js-bucket-ces/lambda-s3/ . --recursive
+    #- zip -r deployment_package.zip *
+    - aws s3 cp s3://test-node-js-bucket-ces/codebuild-for-lambda-main.zip .
+  post_build:
+    commands:
+    - echo "Deploying to the Lambdaa"
+    - aws lambda update-function-code --function-name  s3-lambda --zip-file fileb://codebuild-for-lambda-main.zip
+   
