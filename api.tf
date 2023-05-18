@@ -1,9 +1,9 @@
 resource "aws_api_gateway_rest_api" "example_api" {
-  name = "example_api"
+  name = var.Rest-API
   description = "An example REST API Gateway"
 }
 
-# Define the REST API Gateway resource
+# REST API Gateway resource
 resource "aws_api_gateway_resource" "example_resource" {
   rest_api_id = aws_api_gateway_rest_api.example_api.id
   parent_id   = aws_api_gateway_rest_api.example_api.root_resource_id
@@ -11,7 +11,7 @@ resource "aws_api_gateway_resource" "example_resource" {
   
 }
 
-# Define the REST API Gateway method
+# REST API Gateway method
 resource "aws_api_gateway_method" "example_method" {
   rest_api_id = aws_api_gateway_rest_api.example_api.id
   resource_id = aws_api_gateway_resource.example_resource.id
@@ -23,7 +23,7 @@ resource "aws_api_gateway_method" "example_method" {
 
 
 
-# Define the Lambda integration
+# Lambda integration
 resource "aws_api_gateway_integration" "example_integration" {
   rest_api_id = aws_api_gateway_rest_api.example_api.id
   resource_id = aws_api_gateway_resource.example_resource.id
@@ -63,7 +63,7 @@ resource "aws_api_gateway_model" "my_empty_model" {
 
   
 }
-*/
+
 
 resource "aws_api_gateway_method_response" "test" {
     rest_api_id = aws_api_gateway_rest_api.example_api.id
@@ -87,6 +87,7 @@ resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
    }
 }
 
+*/
 resource "aws_lambda_permission" "api_gateway_invoke" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
@@ -98,15 +99,19 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
 
 
 resource "aws_api_gateway_deployment" "my_deployment" {
-  rest_api_id = aws_api_gateway_rest_api.example_api.id
-  stage_name  = "prod1"
+   depends_on = [ 
+           aws_api_gateway_method.example_method,
+           aws_api_gateway_integration.example_integration,
+   ] 
+   rest_api_id = aws_api_gateway_rest_api.example_api.id
+   stage_name  = "prod1"
 }
 output "example_invoke_url" {
   value = "${aws_api_gateway_deployment.my_deployment.invoke_url}/name"
 }
-output "lambda_arncheck" {
-  value = "${aws_lambda_permission.api_gateway_invoke.function_name}"
-} 
+# output "lambda_arncheck" {
+#  value = "${aws_lambda_permission.api_gateway_invoke.function_name}"
+#} 
 
 
 resource "aws_iam_policy" "rest_api_cloudwatch_policy" {

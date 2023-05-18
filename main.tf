@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "codepipeline" {
-  name     = "tf-nodejs-pipeline-test-demo"
+  name     = var.pipeline
   role_arn = aws_iam_role.codepipeline_role.arn
 
   artifact_store {
@@ -19,8 +19,8 @@ resource "aws_codepipeline" "codepipeline" {
       output_artifacts = ["source_output"]
       
       configuration = {
-        S3Bucket = "test-node-js-bucket-ces"
-        S3ObjectKey  = "codebuild-for-lambda-main.zip"
+        S3Bucket = var.s3_bucket
+        S3ObjectKey  = var.s3_key
       }
     }
   }

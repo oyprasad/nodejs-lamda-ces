@@ -21,15 +21,15 @@ resource "aws_lambda_function" "test_lambda" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
   #filename      = "lambda_function_payload.zip"
-  s3_bucket =  "test-node-js-bucket-ces"
-  s3_key = "codebuild-for-lambda-main.zip"
+  s3_bucket =  var.s3_bucket
+  s3_key = var.s3_key
   function_name = "lambda-demo"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "index.handler"
+  handler       = var.handler
 
   #source_code_hash = data.archive_file.lambda.output_base64sha256
 
-  runtime = "nodejs16.x"
+  runtime = var.runtime
 
   environment {
     variables = {
@@ -41,3 +41,5 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_role_policy_attachment_lam
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   role       = aws_iam_role.iam_for_lambda.name
 }
+
+
